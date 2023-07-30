@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "habana412-backend"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "habana412_backend"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.100.1"
+uvicorn = {extras = ["standard"], version = "^0.23.1"}
+python-dotenv = "^1.0.0"
+pymongo = "^4.4.1"
+motor = "^3.2.0"
+pydantic = "^2.1.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
