@@ -1,4 +1,5 @@
-from datetime import date
+from datetime import datetime
+from typing import List
 
 from bson import ObjectId
 from pydantic import BaseModel, Field
@@ -14,8 +15,8 @@ class ReservationModel(BaseModel):
     rooms: list = Field(...)
     channel: str = Field(...)
     agency: str = Field(...)
-    arrival: date = Field(...)
-    departure: date = Field(...)
+    arrival: datetime = Field(...)
+    departure: datetime = Field(...)
     pax: int = Field(...)
     price: float = Field(...)
     tax: float = Field(...)
@@ -33,8 +34,8 @@ class ReservationModel(BaseModel):
                 "rooms": [1, 2],
                 "channel": "agency",
                 "agency": "jelouu",
-                "arrival": date(2023, 2, 1),
-                "departure": date(2023, 2, 5),
+                "arrival": datetime(2023, 2, 1),
+                "departure": datetime(2023, 2, 5),
                 "pax": 4,
                 "price": 345.30,
                 "tax": 12.50,
@@ -44,17 +45,17 @@ class ReservationModel(BaseModel):
 
 
 class UpdateReservationModel(BaseModel):
-    status: str = Field(...)
-    name: str = Field(...)
-    rooms: list = Field(...)
-    channel: str = Field(...)
-    agency: str = Field(...)
-    arrival: date = Field(...)
-    departure: date = Field(...)
-    pax: int = Field(...)
-    price: float = Field(...)
-    tax: float = Field(...)
-    notes: str = Field(...)
+    status: str = Field(default=None)
+    name: str = Field(default=None)
+    rooms: List[int] = Field(default=None)
+    channel: str = Field(default=None)
+    agency: str = Field(default=None)
+    arrival: datetime = Field(default=None)
+    departure: datetime = Field(default=None)
+    pax: int = Field(default=None)
+    price: float = Field(default=None)
+    tax: float = Field(default=None)
+    notes: str = Field(default=None)
 
     class Config:
         arbitrary_types_allowed = True
@@ -67,8 +68,8 @@ class UpdateReservationModel(BaseModel):
                 "rooms": [1, 2],
                 "channel": "agency",
                 "agency": "jelouu",
-                "arrival": date(2023, 2, 1),
-                "departure": date(2023, 2, 5),
+                "arrival": datetime(2023, 2, 1),
+                "departure": datetime(2023, 2, 5),
                 "pax": 4,
                 "price": 345.30,
                 "tax": 12.50,
