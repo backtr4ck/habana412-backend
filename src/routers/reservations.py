@@ -24,12 +24,16 @@ router = APIRouter(
 async def create_reservation(reservation: ReservationModel = Body(...)):
     reservation = jsonable_encoder(reservation)
     reservation.pop("_id")
+    for date in ["arrival", "departure"]:
+        _s = reservation[date]
+        reservation[date] = datetime.strptime(_s, "%Y-%m-%d")
 
     new_reservation = await db["reservations"].insert_one(reservation)
     created_reservation = await db["reservations"].find_one(
         {"_id": new_reservation.inserted_id}
     )
-    created_reservation["_id"] = str(created_reservation["_id"])
+    for field in ['_id', 'arrival', 'departure']:
+        created_reservation[field] = str(created_reservation[field])
     return JSONResponse(status_code=201, content=created_reservation)
 
 

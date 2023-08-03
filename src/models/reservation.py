@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List
 
 from bson import ObjectId
@@ -15,8 +14,8 @@ class ReservationModel(BaseModel):
     rooms: list = Field(...)
     channel: str = Field(...)
     agency: str = Field(...)
-    arrival: datetime = Field(...)
-    departure: datetime = Field(...)
+    arrival: str = Field(...)
+    departure: str = Field(...)
     pax: int = Field(...)
     price: float = Field(...)
     tax: float = Field(...)
@@ -34,8 +33,8 @@ class ReservationModel(BaseModel):
                 "rooms": [1, 2],
                 "channel": "agency",
                 "agency": "jelouu",
-                "arrival": datetime(2023, 2, 1),
-                "departure": datetime(2023, 2, 5),
+                "arrival": "2023-2-1",
+                "departure": "2023-2-5",
                 "pax": 4,
                 "price": 345.30,
                 "tax": 12.50,
@@ -50,8 +49,8 @@ class UpdateReservationModel(BaseModel):
     rooms: List[int] = Field(default=None)
     channel: str = Field(default=None)
     agency: str = Field(default=None)
-    arrival: datetime = Field(default=None)
-    departure: datetime = Field(default=None)
+    arrival: str = Field(default=None)
+    departure: str = Field(default=None)
     pax: int = Field(default=None)
     price: float = Field(default=None)
     tax: float = Field(default=None)
@@ -68,8 +67,8 @@ class UpdateReservationModel(BaseModel):
                 "rooms": [1, 2],
                 "channel": "agency",
                 "agency": "jelouu",
-                "arrival": datetime(2023, 2, 1),
-                "departure": datetime(2023, 2, 5),
+                "arrival": "2023-2-1",
+                "departure": "2023-2-5",
                 "pax": 4,
                 "price": 345.30,
                 "tax": 12.50,
