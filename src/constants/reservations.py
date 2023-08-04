@@ -1,4 +1,7 @@
-class AGENCIES:
+from enum import Enum
+
+
+class AGENCIES(Enum):
     TUCASAENCUBA = "Tucasaencuba"
     BOOKING_HAVANA = "Booking havana"
     RGN = "RGN"
@@ -12,8 +15,15 @@ class AGENCIES:
     DISTAL_CARIBE = "Distal Caribe"
     ALAMO = "Alamano"
 
+    @classmethod
+    def key_from_value(cls, value):
+        for key, member in cls.__members__.items():
+            if member.value == value:
+                return key
+        return None
 
-class Channels:
+
+class CHANNELS(Enum):
     AIRBNB = "Airbnb"
     BOOKING = "Booking"
     DIRECTO = "Directo"
@@ -22,3 +32,21 @@ class Channels:
     OTROS = "Otros"
     CORTESIA = "Cortesia"
     FACEBOOK = "Facebook"
+
+    @classmethod
+    def key_from_value(cls, value):
+        for key, member in cls.__members__.items():
+            if member.value == value:
+                return key
+        return None
+
+class STATUS(Enum):
+    CONFIRMADO = "Confirmado"
+    CANCELADO = "Cancelado"
+
+    @classmethod
+    def key_from_value(cls, value):
+        for key, member in cls.__members__.items():
+            if member.value == value:
+                return key
+        return None

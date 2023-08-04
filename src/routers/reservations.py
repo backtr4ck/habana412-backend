@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 from models.reservation import ReservationModel, UpdateReservationModel
 from utils.auth import get_current_active_user
 from utils.database import connect_to_mongo
+from utils.utils import check_dates
 
 db = connect_to_mongo()
 router = APIRouter(
@@ -23,16 +24,22 @@ router = APIRouter(
 )
 async def create_reservation(reservation: ReservationModel = Body(...)):
     reservation = jsonable_encoder(reservation)
-    reservation.pop("_id")
-    for date in ["arrival", "departure"]:
+    reservation.pop("_id")  # pop id so it auto generates in mongoDB
+
+    for date in ["arrival", "departure"]:  # convert to datetime
         _s = reservation[date]
         reservation[date] = datetime.strptime(_s, "%Y-%m-%d")
+
+    if check_dates(reservation["arrival"], reservation["departure"]) is False:
+        raise HTTPException(
+            status_code=500, detail="Arrival can not be same or older than departure."
+        )
 
     new_reservation = await db["reservations"].insert_one(reservation)
     created_reservation = await db["reservations"].find_one(
         {"_id": new_reservation.inserted_id}
     )
-    for field in ['_id', 'arrival', 'departure']:
+    for field in ["_id", "arrival", "departure"]:
         created_reservation[field] = str(created_reservation[field])
     return JSONResponse(status_code=201, content=created_reservation)
 
@@ -46,15 +53,19 @@ async def create_reservation(reservation: ReservationModel = Body(...)):
 async def list_reservations(
     page: int = Query(1, gt=0),
     page_size: int = Query(100, le=200),
+    numberId: str = Query(None),  # 1-2-3-4
     rooms: str = Query(None),  # 1-2-3-4
     status: str = Query(None),
     channel: str = Query(None),
     agency: str = Query(None),
-    arrival: str = Query(None),  # YYYY_MM-DD
-    departure: str = Query(None),  # YYYY_MM-DD
+    arrival: str = Query(None),  # YYYY-MM-DD
+    departure: str = Query(None),  # YYYY-MM-DD
 ):
     skip = (page - 1) * page_size
+
     filters = {}
+    if numberId and numberId != "":
+        filters["numberId"] = int(numberId)
 
     if rooms:
         _s = rooms.split("-")
@@ -71,21 +82,13 @@ async def list_reservations(
         filters["agency"] = agency
 
     if arrival:
-        _s = arrival.split("-")
-        year = int(_s[0])
-        month = int(_s[1])
-        day = int(_s[2])
-        arrival = datetime(year, month, day)
-        filters["arrival"] = {"$gte": arrival}
+        _a = datetime.strptime(arrival, "%Y-%m-%d")
+        filters["arrival"] = {"$gte": _a}
 
     if departure:
-        _s = departure.split("-")
-        year = int(_s[0])
-        month = int(_s[1])
-        day = int(_s[2])
-        departure = datetime(year, month, day)
-        filters["departure"] = {"$lte": departure}
-
+        _d = datetime.strptime(departure, "%Y-%m-%d")
+        filters["departure"] = {"$gte": _d}
+    print(filters)
     reservations = (
         await db["reservations"].find(filters).skip(skip).limit(page_size).to_list(None)
     )

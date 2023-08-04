@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any, List
 
 from bson import ObjectId
 from pydantic import BaseModel, Field
@@ -14,8 +14,8 @@ class ReservationModel(BaseModel):
     rooms: list = Field(...)
     channel: str = Field(...)
     agency: str = Field(...)
-    arrival: str = Field(...)
-    departure: str = Field(...)
+    arrival: Any = Field(...)
+    departure: Any = Field(...)
     pax: int = Field(...)
     price: float = Field(...)
     tax: float = Field(...)
@@ -29,9 +29,9 @@ class ReservationModel(BaseModel):
             "example": {
                 "numberId": 1,
                 "name": "Jane Doe",
-                "status": "Confirmed",
+                "status": "confirmado",
                 "rooms": [1, 2],
-                "channel": "agency",
+                "channel": "Agencia",
                 "agency": "jelouu",
                 "arrival": "2023-2-1",
                 "departure": "2023-2-5",
@@ -63,9 +63,9 @@ class UpdateReservationModel(BaseModel):
         json_schema_extra = {
             "example": {
                 "name": "Jane Doe",
-                "status": "Confirmed",
+                "status": "Confirmado",
                 "rooms": [1, 2],
-                "channel": "agency",
+                "channel": "Agencia",
                 "agency": "jelouu",
                 "arrival": "2023-2-1",
                 "departure": "2023-2-5",

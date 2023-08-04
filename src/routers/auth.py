@@ -6,7 +6,7 @@ from utils.auth import create_access_token, create_refresh_token, verify_passwor
 from utils.database import connect_to_mongo
 
 db = connect_to_mongo()
-router = APIRouter()
+router = APIRouter(tags=["Authorization"])
 
 
 @router.post(
@@ -15,7 +15,7 @@ router = APIRouter()
     response_model=Token,
 )
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = await db.admin.find_one({'username': form_data.username})
+    user = await db.admin.find_one({"username": form_data.username})
     if user is None:
         raise HTTPException(
             status_code=400,
