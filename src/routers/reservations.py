@@ -87,7 +87,7 @@ async def list_reservations(
 
     if departure:
         _d = datetime.strptime(departure, "%Y-%m-%d")
-        filters["departure"] = {"$gte": _d}
+        filters["departure"] = {"$lte": _d}
     print(filters)
     reservations = (
         await db["reservations"].find(filters).skip(skip).limit(page_size).to_list(None)
@@ -121,6 +121,10 @@ async def get_reservation(numberId):
 )
 async def update_reservation(numberId, reservation: UpdateReservationModel = Body(...)):
     numberId = int(numberId)
+    reservation = jsonable_encoder(reservation)
+    for date in ["arrival", "departure"]:  # convert to datetime
+        _s = reservation[date]
+        reservation[date] = datetime.strptime(_s, "%Y-%m-%d")
 
     update_result = await db["reservations"].update_one(
         {"numberId": numberId}, {"$set": dict(reservation)}

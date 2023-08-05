@@ -29,10 +29,10 @@ class ReservationModel(BaseModel):
             "example": {
                 "numberId": 1,
                 "name": "Jane Doe",
-                "status": "confirmado",
+                "status": "Confirmado",
                 "rooms": [1, 2],
                 "channel": "Agencia",
-                "agency": "jelouu",
+                "agency": "Jelouu",
                 "arrival": "2023-2-1",
                 "departure": "2023-2-5",
                 "pax": 4,
@@ -49,8 +49,8 @@ class UpdateReservationModel(BaseModel):
     rooms: List[int] = Field(default=None)
     channel: str = Field(default=None)
     agency: str = Field(default=None)
-    arrival: str = Field(default=None)
-    departure: str = Field(default=None)
+    arrival: any = Field(default=None)
+    departure: any = Field(default=None)
     pax: int = Field(default=None)
     price: float = Field(default=None)
     tax: float = Field(default=None)
@@ -66,7 +66,7 @@ class UpdateReservationModel(BaseModel):
                 "status": "Confirmado",
                 "rooms": [1, 2],
                 "channel": "Agencia",
-                "agency": "jelouu",
+                "agency": "Jelouu",
                 "arrival": "2023-2-1",
                 "departure": "2023-2-5",
                 "pax": 4,
