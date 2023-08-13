@@ -88,7 +88,6 @@ async def list_reservations(
     if departure:
         _d = datetime.strptime(departure, "%Y-%m-%d")
         filters["departure"] = {"$lte": _d}
-    print(filters)
     reservations = (
         await db["reservations"].find(filters).skip(skip).limit(page_size).to_list(None)
     )
