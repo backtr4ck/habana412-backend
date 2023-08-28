@@ -22,7 +22,7 @@ router = APIRouter(
     response_description="Creates a new reservation",
     response_model=ReservationModel,
 )
-async def create_reservation(reservation: ReservationModel = Body(...)):
+async def create_reservation(reservation: ReservationModel = Body(...)) -> JSONResponse:
     reservation = jsonable_encoder(reservation)
     reservation.pop("_id")  # pop id so it auto generates in mongoDB
 
@@ -60,7 +60,7 @@ async def list_reservations(
     agency: str = Query(None),
     arrival: str = Query(None),  # YYYY-MM-DD
     departure: str = Query(None),  # YYYY-MM-DD
-):
+) -> List[ReservationModel]:
     skip = (page - 1) * page_size
 
     filters = {}
@@ -100,7 +100,7 @@ async def list_reservations(
     response_description="Gets a single reservation",
     response_model=ReservationModel,
 )
-async def get_reservation(numberId):
+async def get_reservation(numberId: str) -> ReservationModel:
     numberId = int(numberId)
     reservation = await db["reservations"].find_one({"numberId": numberId})
     if reservation is not None:
@@ -118,7 +118,9 @@ async def get_reservation(numberId):
     response_description="Updates a reservation",
     response_model=ReservationModel,
 )
-async def update_reservation(numberId, reservation: UpdateReservationModel = Body(...)):
+async def update_reservation(
+    numberId, reservation: UpdateReservationModel = Body(...)
+) -> ReservationModel:
     numberId = int(numberId)
     reservation = jsonable_encoder(reservation)
     for date in ["arrival", "departure"]:  # convert to datetime
@@ -147,7 +149,7 @@ async def update_reservation(numberId, reservation: UpdateReservationModel = Bod
 
 # delete reservation
 @router.delete("/reservation/{numberId}", response_description="Delete a reservation")
-async def delete_reservation(numberId: str):
+async def delete_reservation(numberId: str) -> JSONResponse:
     numberId = int(numberId)
     delete_result = await db["reservations"].delete_one({"numberId": numberId})
 
