@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List
+from typing import Annotated
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Query
 from fastapi.encoders import jsonable_encoder
@@ -48,19 +48,19 @@ async def create_reservation(reservation: ReservationModel = Body(...)) -> JSONR
 @router.get(
     "/reservation",
     response_description="Gets reservations",
-    response_model=List[ReservationModel],
+    response_model=list[ReservationModel],
 )
 async def list_reservations(
-    page: int = Query(1, gt=0),
-    page_size: int = Query(100, le=200),
-    numberId: str = Query(None),  # 1-2-3-4
-    rooms: str = Query(None),  # 1-2-3-4
-    status: str = Query(None),
-    channel: str = Query(None),
-    agency: str = Query(None),
-    arrival: str = Query(None),  # YYYY-MM-DD
-    departure: str = Query(None),  # YYYY-MM-DD
-) -> List[ReservationModel]:
+    page: Annotated[int, Query(gt=0)] = 1,
+    page_size: Annotated[int, Query(le=200)] = 100,
+    numberId: Annotated[str, Query()] = None,
+    rooms: Annotated[str, Query()] = None,
+    status: Annotated[str, Query()] = None,
+    channel: Annotated[str, Query()] = None,
+    agency: Annotated[str, Query()] = None,
+    arrival: Annotated[str, Query()] = None,
+    departure: Annotated[str, Query()] = None,
+) -> list[ReservationModel]:
     skip = (page - 1) * page_size
 
     filters = {}
