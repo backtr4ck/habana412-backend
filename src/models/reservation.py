@@ -1,5 +1,4 @@
-from typing import Any, List
-
+from typing import Any
 from bson import ObjectId
 from pydantic import BaseModel, Field
 
@@ -44,17 +43,18 @@ class ReservationModel(BaseModel):
 
 
 class UpdateReservationModel(BaseModel):
-    status: str = Field(default=None)
-    name: str = Field(default=None)
-    rooms: List[int] = Field(default=None)
-    channel: str = Field(default=None)
-    agency: str = Field(default=None)
-    arrival: any = Field(default=None)
-    departure: any = Field(default=None)
-    pax: int = Field(default=None)
-    price: float = Field(default=None)
-    tax: float = Field(default=None)
-    notes: str = Field(default=None)
+    numberId: int = Field(...)
+    status: str = Field(...)
+    name: str = Field(...)
+    rooms: list = Field(...)
+    channel: str = Field(...)
+    agency: str = Field(...)
+    arrival: Any = Field(...)
+    departure: Any = Field(...)
+    pax: int = Field(...)
+    price: float = Field(...)
+    tax: float = Field(...)
+    notes: str = Field(...)
 
     class Config:
         arbitrary_types_allowed = True

@@ -44,6 +44,41 @@ async def create_reservation(reservation: ReservationModel = Body(...)) -> JSONR
     return JSONResponse(status_code=201, content=created_reservation)
 
 
+# update a reservation
+@router.put(
+    "/reservation/{numberId}",
+    response_description="Updates a reservation",
+    response_model=ReservationModel,
+)
+async def update_reservation(
+    numberId, reservation: UpdateReservationModel = Body(...)
+) -> ReservationModel:
+    numberId = int(numberId)
+    reservation = jsonable_encoder(reservation)
+    for date in ["arrival", "departure"]:  # convert to datetime
+        _s = reservation[date]
+        reservation[date] = datetime.strptime(_s, "%Y-%m-%d")
+
+    update_result = await db["reservations"].update_one(
+        {"numberId": numberId}, {"$set": dict(reservation)}
+    )
+
+    if update_result.modified_count == 1:
+        if (
+            updated_reservation := await db["reservations"].find_one(
+                {"numberId": numberId}
+            )
+        ) is not None:
+            return updated_reservation
+
+    if (
+        existing_reservation := await db["reservations"].find_one(
+            {"numberId": numberId}
+        )
+    ) is not None:
+        return existing_reservation
+
+
 # list all reservations
 @router.get(
     "/reservation",
@@ -110,41 +145,6 @@ async def get_reservation(numberId: str) -> ReservationModel:
             status_code=404,
             detail=f"Reservation with numberId '{numberId}' not found",
         )
-
-
-# update a reservation
-@router.put(
-    "/reservation/{numberId}",
-    response_description="Updates a reservation",
-    response_model=ReservationModel,
-)
-async def update_reservation(
-    numberId, reservation: UpdateReservationModel = Body(...)
-) -> ReservationModel:
-    numberId = int(numberId)
-    reservation = jsonable_encoder(reservation)
-    for date in ["arrival", "departure"]:  # convert to datetime
-        _s = reservation[date]
-        reservation[date] = datetime.strptime(_s, "%Y-%m-%d")
-
-    update_result = await db["reservations"].update_one(
-        {"numberId": numberId}, {"$set": dict(reservation)}
-    )
-
-    if update_result.modified_count == 1:
-        if (
-            updated_reservation := await db["reservations"].find_one(
-                {"numberId": numberId}
-            )
-        ) is not None:
-            return updated_reservation
-
-    if (
-        existing_reservation := await db["reservations"].find_one(
-            {"numberId": numberId}
-        )
-    ) is not None:
-        return existing_reservation
 
 
 # delete reservation
